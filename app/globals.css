@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@config "../tailwind.config.js";
+@plugin 'tailwind-scrollbar';
+
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
+}
+html, body {
+  min-height: 100%;
+}
+body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.my-toast {
+    @apply bg-white text-text-dark shadow-lg font-bold text-lg;
+    border-radius: 0 !important;
+    color: #182434 !important; /* text-dark */
+}
+.Toastify__toast {
+    background: white !important;
+    color: #182434 !important; /* text-dark */
+    border-radius: 0 !important;
+}
+.Toastify__progress-bar--wrp{
+    border-radius: 0 !important;
+}
+.Toastify__progress-bar {
+    background: #5CA0E2 !important; /* Tailwind blue-600 */
+    border-radius: 0 !important;
+
+}
+.Toastify__progress-bar--bg {
+    background: #fff !important;
+    border-radius: 0 !important;
+
+}
+.Toastify__toast-icon svg {
+    fill: #5CA0E2 !important;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    @keyframes spin-smooth {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .animate-spin-smooth {
+        animation: spin-smooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes slide-up {
+      0% {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .animate-slide-up {
+      animation: slide-up 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
