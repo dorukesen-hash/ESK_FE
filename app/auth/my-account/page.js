@@ -1,5 +1,5 @@
 "use client"
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {AppContext} from "@/Context/AppContext";
 import {useRouter} from "next/navigation";
 import BreadCrumbs from "@/components/pageLayouts/BreadCrumbs";
@@ -11,9 +11,11 @@ export default function Page() {
 
 	const {state} = useContext(AppContext);
 
-	if (!state.user) {
-		router.push("/auth/login");
-	}
+	useEffect(() => {
+		if (!state.user) {
+			router.push("/auth/login");
+		}
+	}, [state.user, router]);
 
 	return (
 		<div className="bg-white w-full h-full flex items-center justify-center">

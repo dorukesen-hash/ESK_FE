@@ -55,6 +55,9 @@ export function VariantLevel({props}) {
 
 	const tabTitles = ["Product Description", "Specifications", "Frequently Purchased Together"];
 
+	// subcategory bulunamazsa veya fieldLabels'da karşılığı yoksa crash etmemesi için
+	const specFields = fieldLabels[subcategoryName] || {};
+
 	const tabContents = [
 		// 1. Tab: Ürün Açıklaması
 		(
@@ -80,10 +83,10 @@ export function VariantLevel({props}) {
 				<button onClick={()=> console.log(subcategoryName)}>name</button>
 				<button onClick={()=> console.log(state.categories)}>all</button>
 				{Object.entries(variantData || {})
-					.filter(([key, value]) => fieldLabels[subcategoryName][key] && value !== null && value !== "")
+					.filter(([key, value]) => specFields[key] && value !== null && value !== "")
 					.map(([key, value]) => (
 						<li key={key} className="h-[34px] flex items-center border-b-[1px] border-border-gray px-2">
-							<span className="min-w-[240px] text-left font-medium">{fieldLabels[subcategoryName][key]}</span>
+							<span className="min-w-[240px] text-left font-medium">{specFields[key]}</span>
 							<span className="flex-grow text-left">{value}</span>
 						</li>
 					))}

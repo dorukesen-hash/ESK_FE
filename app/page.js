@@ -1,6 +1,6 @@
 "use client";
 import React, {useState, useEffect} from "react";
-import Hero from "@/components/landingPage/Hero";
+import HomeHero from "@/components/landingPage/Hero";
 import InfoButtons from "@/components/landingPage/InfoButtons";
 import InfoCarts from "@/components/landingPage/InfoCarts";
 import Quote from "@/components/landingPage/Quote";
@@ -44,7 +44,7 @@ export default function Home() {
 	return (
 		<div className="flex flex-col bg-white w-full relative">
 			<div className="flex flex-col items-center relative z-10">
-				<Hero/>
+				<HomeHero concept="a"/>
 				<InfoButtons onButtonClick={handleButtonClick}/>
 				<Slider isExpanded={sliderState.isExpanded} contentId={sliderState.contentId}
 				        closeSlider={() => setSliderState({...sliderState, isExpanded: false,})}/>

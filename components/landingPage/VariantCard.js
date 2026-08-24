@@ -25,11 +25,23 @@ export default function VariantCard({ id }) {
         <Loading />
     </div>;
 
-    const category = categories.find(c => c.id === item.categoryId);
-    const subcategory = category?.subcategories?.find(s => s.id === item.subcategoryId);
+    // Her öğenin subcategoryId'si bellidir; bu id'den doğrudan kendi subcategory'ine ulaşılır
+    let category = null;
+    let subcategory = null;
+    for (const c of categories) {
+        const found = (c?.subcategories || []).find(s => s.id === item.subcategoryId);
+        if (found) {
+            category = c;
+            subcategory = found;
+            break;
+        }
+    }
     const product = item.productId
         ? subcategory?.products?.find(p => p.id === item.productId)
         : null;
+
+    // Kart görseli: subcategory_images listesinin 0. indeksindeki image'in url'i
+    const subcategoryImageUrl = subcategory?.subcategory_images?.[0]?.image?.url;
 
     function slugify(text) {
         return text
@@ -57,11 +69,7 @@ export default function VariantCard({ id }) {
                 max-h-[558px] max-w-[444px] aspect-[444/558] w-full"
             >
             <Image
-                src={
-                    item?.variant_images?.length > 0 && item.variant_images[0]?.image?.url
-                        ? `https://cdn.enesdorukesen.com.tr/${item.variant_images[0].image.url}`
-                        : icon
-                }
+                src={subcategoryImageUrl ? `https://cdn.enesdorukesen.com.tr/${subcategoryImageUrl}` : icon}
                 alt="Variant Image"
                 width={290}
                 height={290}
