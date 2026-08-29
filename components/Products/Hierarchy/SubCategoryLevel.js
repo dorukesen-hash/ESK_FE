@@ -28,7 +28,7 @@ export default function SubCategoryLevel({props}) {
 		?<div className="w-full h-full max-w-[1200px] flex flex-col min-[1024px]:flex-row min-[1024px]:items-start gap-8 my-8 tablet:my-[62px]">
 			<div className="relative w-full max-w-[440px] mx-auto min-[1024px]:mx-0 aspect-square shrink-0 rounded-[12px] border-2 border-border-gray bg-white overflow-hidden">
 				<Image
-					src={subcategory.subcategory_images?.[0] ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon}
+					src={subcategory.subcategory_images?.[0]?.image?.url ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon}
 					alt={prettify(subcategory.name)}
 					fill
 					sizes="(max-width: 1024px) 90vw, 440px"
@@ -48,7 +48,7 @@ export default function SubCategoryLevel({props}) {
 								src={p.product_images.length > 0 ? `${cdnUrl}${p.product_images[0]?.image?.url}` : icon}
 								alt={p.title}
 								fill
-								sizes="160px"
+								sizes="(max-width: 767px) 96px, 160px"
 								className="object-contain rounded"
 							/>
 						</div>
@@ -72,7 +72,7 @@ export default function SubCategoryLevel({props}) {
 				<div className="flex flex-col">
 					<div className="w-[480px] h-[480px] relative rounded-lg overflow-hidden">
 						<Image
-							src={activeImage ? `${cdnUrl}${activeImage?.image?.url}`: `${cdnUrl}${subcategory?.subcategory_images[0].image.url}`}
+							src={activeImage ? `${cdnUrl}${activeImage?.image?.url}`: (subcategory?.subcategory_images?.[0]?.image?.url ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon)}
 							alt="Main Product"
 							sizes="480px"
 							fill
@@ -102,9 +102,9 @@ export default function SubCategoryLevel({props}) {
 				</div>
 				<div className="flex flex-col justify-start pt-4">
 					<div>
-						<p className="mb-[30px] text-[16px]">{subcategory.variants[0]?.description}</p>
+						<p className="mb-[30px] text-[16px]">{subcategory.variants?.[0]?.description}</p>
 						{[1,2,3,4,5,6].map(i => (
-							subcategory.variants[0]?.[`bullet_${i}`] && (
+							subcategory.variants?.[0]?.[`bullet_${i}`] && (
 								<p key={i} className="flex pb-[18px] gap-[12px] text-[14px]">
 									<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										{/* SVG path'leri */}
