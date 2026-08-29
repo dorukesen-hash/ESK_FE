@@ -85,7 +85,7 @@ export default function SubCategoryLevel({props}) {
 							<div
 								key={img.id}
 								className={`w-[80px] h-[80px] border-2 rounded relative cursor-pointer ${
-									activeImage === img.image.url ? 'border-blue-500' : 'border-gray-300'
+									activeImage === img ? 'border-blue-500' : 'border-gray-300'
 								}`}
 								onClick={() => setActiveImage(img)}
 							>
