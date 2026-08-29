@@ -20,9 +20,8 @@ const shopMenu = {
 	viewAll: {label: "View All Products", href: "/products"},
 };
 
-// Shop Products dışındaki sekmeler — henüz hedefi olmayanlar link/etkileşim almıyor
 const primaryNav = [
-	{label: "Industries We Serve"},
+	{label: "Industries We Serve", href: "/#industries-we-serve"},
 	{label: "Knowledge Center", href: "/knowledge-center"},
 	{label: "About Us", href: "/pages/about-us"},
 ];
