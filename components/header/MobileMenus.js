@@ -122,6 +122,10 @@ export default function MobileMenus() {
 							      className="w-full text-[16px] text-left pl-[20px] text-text-dark font-semibold py-[10px] border-r-[4px] border-transparent hover:bg-button-gray hover:border-r-custom-blue">
 								About Us
 							</Link>
+							<Link href={"/knowledge-center"}
+							      className="w-full text-[16px] text-left pl-[20px] text-text-dark font-semibold py-[10px] border-r-[4px] border-transparent hover:bg-button-gray hover:border-r-custom-blue">
+								Knowledge Center
+							</Link>
 						</div>
 					</div>}
 			</div>

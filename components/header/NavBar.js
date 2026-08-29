@@ -20,11 +20,11 @@ const shopMenu = {
 	viewAll: {label: "View All Products", href: "/products"},
 };
 
-// Shop Products dışındaki sekmeler — şimdilik link / etkileşim yok
+// Shop Products dışındaki sekmeler — henüz hedefi olmayanlar link/etkileşim almıyor
 const primaryNav = [
 	{label: "Industries We Serve"},
-	{label: "Knowledge Center"},
-	{label: "About Us"},
+	{label: "Knowledge Center", href: "/knowledge-center"},
+	{label: "About Us", href: "/pages/about-us"},
 ];
 
 function Chevron({open}) {
@@ -173,9 +173,15 @@ export default function NavBar() {
 			</div>
 
 			{primaryNav.map((item) => (
-				<span key={item.label} className={`${itemClass(false)} cursor-default select-none`}>
-					{item.label}
-				</span>
+				item.href ? (
+					<Link key={item.label} href={item.href} className={itemClass(false)}>
+						{item.label}
+					</Link>
+				) : (
+					<span key={item.label} className={`${itemClass(false)} cursor-default select-none`}>
+						{item.label}
+					</span>
+				)
 			))}
 		</nav>
 	);
