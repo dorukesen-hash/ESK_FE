@@ -23,42 +23,46 @@ export default function SubCategoryLevel({props}) {
 	const subcategory = categories.find(c => c.id === props.categoryId).subcategories.find(s => s.id === props.subcategoryId);
 
 	return( subcategory?.products.length > 0
-		?<div className="w-full h-full max-w-[1200px] flex justify-center gap-[38px] my-[62px]">
-			<div className="min-h-[480px] min-w-[480px] h-[480px] w-[480px]">
+		// Image and product links stack on mobile instead of a fixed-width
+		// row that overflowed on phone viewports.
+		?<div className="w-full h-full max-w-[1200px] flex flex-col min-[1024px]:flex-row min-[1024px]:items-start gap-8 my-8 tablet:my-[62px]">
+			<div className="relative w-full max-w-[440px] mx-auto min-[1024px]:mx-0 aspect-square shrink-0 rounded-[12px] border-2 border-border-gray bg-white overflow-hidden">
 				<Image
-					src={`${cdnUrl}${subcategory.subcategory_images[0].image.url}`}
-					alt={icon}
-					width={480}
-					height={480}
-					className="object-contain w-full h-full"
+					src={subcategory.subcategory_images?.[0]?.image?.url ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon}
+					alt={prettify(subcategory.name)}
+					fill
+					sizes="(max-width: 1024px) 90vw, 440px"
+					className="object-contain p-2"
 				/>
 			</div>
 
 			<div className="w-full flex flex-col gap-[16px] pb-[4px]">
-				<p className="text-text-dark text-[16px]">
-					Desc_id:{subcategory.description_id}
-				</p>
-
 				{subcategory.products.map((p) => (
 					<Link
 						key={p.id}
 						href={`/products/${slugify(category.name)}/${slugify(subcategory.name)}/${slugify(p.title)}`}
-						className="w-full h-[120px] flex items-center rounded-[12px] border-[2px] border-border-gray hover:border-custom-blue"
+						className="group w-full min-h-[96px] flex items-center gap-4 p-3 rounded-[12px] border-[2px] border-border-gray hover:border-custom-blue"
 					>
-						<div
-							className="w-[192px] h-[98px] rounded-[6px] relative">
+						<div className="w-[96px] tablet:w-[160px] h-[80px] rounded-[6px] relative shrink-0 bg-white">
 							<Image
 								src={p.product_images.length > 0 ? `${cdnUrl}${p.product_images[0]?.image?.url}` : icon}
 								alt={p.title}
 								fill
-								className="object-cover rounded"
+								sizes="(max-width: 767px) 96px, 160px"
+								className="object-contain rounded"
 							/>
 						</div>
-						<div>
-							<h3 className="text-lg font-semibold text-gray-800 group-hover:text-custom-button-green">
+						<div className="min-w-0">
+							<h3 className="text-[16px] tablet:text-lg font-semibold text-gray-800 group-hover:text-custom-blue">
 								{prettify(p.title)}
 							</h3>
+							{(p.variants?.length ?? 0) > 0 && (
+								<p className="text-[13px] text-text-light mt-0.5">
+									{p.variants.length} standard {p.variants.length === 1 ? "size" : "sizes"}
+								</p>
+							)}
 						</div>
+						<span aria-hidden="true" className="ml-auto text-custom-blue font-bold shrink-0 pr-1">→</span>
 					</Link>
 				))}
 			</div>
@@ -68,7 +72,7 @@ export default function SubCategoryLevel({props}) {
 				<div className="flex flex-col">
 					<div className="w-[480px] h-[480px] relative rounded-lg overflow-hidden">
 						<Image
-							src={activeImage ? `${cdnUrl}${activeImage?.image?.url}`: `${cdnUrl}${subcategory?.subcategory_images[0].image.url}`}
+							src={activeImage ? `${cdnUrl}${activeImage?.image?.url}`: (subcategory?.subcategory_images?.[0]?.image?.url ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon)}
 							alt="Main Product"
 							sizes="480px"
 							fill
@@ -77,11 +81,11 @@ export default function SubCategoryLevel({props}) {
 						/>
 					</div>
 					<div className="flex justify-center gap-2 mt-4">
-						{subcategory?.subcategory_images.length > 0 && subcategory?.subcategory_images.map((img) => (
+						{subcategory?.subcategory_images?.length > 0 && subcategory?.subcategory_images.map((img) => (
 							<div
 								key={img.id}
 								className={`w-[80px] h-[80px] border-2 rounded relative cursor-pointer ${
-									activeImage === img.image.url ? 'border-blue-500' : 'border-gray-300'
+									activeImage === img ? 'border-blue-500' : 'border-gray-300'
 								}`}
 								onClick={() => setActiveImage(img)}
 							>
@@ -98,9 +102,9 @@ export default function SubCategoryLevel({props}) {
 				</div>
 				<div className="flex flex-col justify-start pt-4">
 					<div>
-						<p className="mb-[30px] text-[16px]">{subcategory.variants[0]?.description}</p>
+						<p className="mb-[30px] text-[16px]">{subcategory.variants?.[0]?.description}</p>
 						{[1,2,3,4,5,6].map(i => (
-							subcategory.variants[0]?.[`bullet_${i}`] && (
+							subcategory.variants?.[0]?.[`bullet_${i}`] && (
 								<p key={i} className="flex pb-[18px] gap-[12px] text-[14px]">
 									<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										{/* SVG path'leri */}

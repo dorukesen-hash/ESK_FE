@@ -4,27 +4,17 @@ import React, {useEffect, useMemo, useRef, useState, useContext} from "react";
 import {useRouter, usePathname} from "next/navigation";
 import Link from "next/link";
 import {AppContext} from "@/Context/AppContext";
-import {slugify} from "@/hooks/service";
-
-// Görüntü için
-function capitalizeWords(str) {
-	return str
-		.toLowerCase()
-		.split(' ')
-		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
-}
+import {prettify, slugify} from "@/hooks/service";
 
 const shopMenu = {
 	label: "Shop Products",
 	viewAll: {label: "View All Products", href: "/products"},
 };
 
-// Shop Products dışındaki sekmeler — şimdilik link / etkileşim yok
 const primaryNav = [
-	{label: "Industries We Serve"},
-	{label: "Knowledge Center"},
-	{label: "About Us"},
+	{label: "Industries We Serve", href: "/#industries-we-serve"},
+	{label: "Knowledge Center", href: "/knowledge-center"},
+	{label: "About Us", href: "/pages/about-us"},
 ];
 
 function Chevron({open}) {
@@ -71,10 +61,10 @@ export default function NavBar() {
 	// Backend'den gelen kategoriler -> mega menu grupları
 	const groups = useMemo(() => (
 		(categories ?? []).map((item) => ({
-			label: capitalizeWords(item.name),
+			label: prettify(item.name),
 			href: `/products/${slugify(item.name)}`,
 			children: (item.subcategories ?? []).map((subItem) => ({
-				label: capitalizeWords(subItem.name),
+				label: prettify(subItem.name),
 				href: `/products/${slugify(item.name)}/${slugify(subItem.name)}`,
 				children: [],
 			})),
@@ -173,9 +163,15 @@ export default function NavBar() {
 			</div>
 
 			{primaryNav.map((item) => (
-				<span key={item.label} className={`${itemClass(false)} cursor-default select-none`}>
-					{item.label}
-				</span>
+				item.href ? (
+					<Link key={item.label} href={item.href} className={itemClass(false)}>
+						{item.label}
+					</Link>
+				) : (
+					<span key={item.label} className={`${itemClass(false)} cursor-default select-none`}>
+						{item.label}
+					</span>
+				)
 			))}
 		</nav>
 	);

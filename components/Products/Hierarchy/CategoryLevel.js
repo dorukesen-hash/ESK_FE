@@ -21,20 +21,22 @@ const CategoryLevel = ({props}) => {
 	}
 
 	return (
-		<div className="w-full max-w-[1920px] flex justify-center mt-[62px] gap-[48px] items-center">
+		// Cards wrap and shrink to the container on small screens instead of a
+		// fixed-width row that overflowed on phone viewports.
+		<div className="w-full max-w-[1920px] flex flex-wrap justify-center my-[62px] gap-[24px]">
 			{category.subcategories.length > 0 && category.subcategories.map((s) =>
 				<Link
 					key={s.id}
 					href={`/products/${slugify(category.name)}/${slugify(s.name)}`}
-					className="flex flex-col items-center justify-end h-[454px] w-[372px] rounded-[12px] border-[2px] border-border-gray hover:border-custom-blue"
+					className="flex flex-col items-center w-full max-w-[372px] tablet:w-[45%] min-[1024px]:w-[30%] rounded-[12px] border-[2px] border-border-gray hover:border-custom-blue"
 				>
-					<div className="relative w-[356px] h-[356px] flex items-center justify-center">
+					<div className="relative w-full aspect-square flex items-center justify-center">
 						<Image
-							src={s.subcategory_images.length >0 ? `${cdnUrl}${s.subcategory_images[0]?.image?.url}` : icon}
+							src={s.subcategory_images?.length > 0 ? `${cdnUrl}${s.subcategory_images[0]?.image?.url}` : icon}
 							fill
 							alt="Category Image"
 							className="object-contain"
-							sizes="356px"
+							sizes="(max-width: 767px) 90vw, (max-width: 1023px) 45vw, 24vw"
 						/>
 					</div>
 					<p className="text-[20px] font-[700] text-center mb-[32px] mt-[16px]">{s.name}</p>
