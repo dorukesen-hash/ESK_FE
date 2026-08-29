@@ -36,7 +36,7 @@ const CategoryLevel = ({props}) => {
 							fill
 							alt="Category Image"
 							className="object-contain"
-							sizes="(max-width: 768px) 90vw, 356px"
+							sizes="(max-width: 767px) 90vw, (max-width: 1023px) 45vw, 360px"
 						/>
 					</div>
 					<p className="text-[20px] font-[700] text-center mb-[32px] mt-[16px]">{s.name}</p>

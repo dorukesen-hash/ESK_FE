@@ -28,7 +28,7 @@ export default function SubCategoryLevel({props}) {
 		?<div className="w-full h-full max-w-[1200px] flex flex-col min-[1024px]:flex-row min-[1024px]:items-start gap-8 my-8 tablet:my-[62px]">
 			<div className="relative w-full max-w-[440px] mx-auto min-[1024px]:mx-0 aspect-square shrink-0 rounded-[12px] border-2 border-border-gray bg-white overflow-hidden">
 				<Image
-					src={subcategory.subcategory_images?.[0] ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon}
+					src={subcategory.subcategory_images?.[0]?.image?.url ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon}
 					alt={prettify(subcategory.name)}
 					fill
 					sizes="(max-width: 1024px) 90vw, 440px"
