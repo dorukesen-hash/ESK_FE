@@ -32,11 +32,11 @@ const CategoryLevel = ({props}) => {
 				>
 					<div className="relative w-full aspect-square flex items-center justify-center">
 						<Image
-							src={s.subcategory_images.length >0 ? `${cdnUrl}${s.subcategory_images[0]?.image?.url}` : icon}
+							src={s.subcategory_images?.length > 0 ? `${cdnUrl}${s.subcategory_images[0]?.image?.url}` : icon}
 							fill
 							alt="Category Image"
 							className="object-contain"
-							sizes="(max-width: 767px) 90vw, (max-width: 1023px) 45vw, 360px"
+							sizes="(max-width: 767px) 90vw, (max-width: 1023px) 45vw, 24vw"
 						/>
 					</div>
 					<p className="text-[20px] font-[700] text-center mb-[32px] mt-[16px]">{s.name}</p>
