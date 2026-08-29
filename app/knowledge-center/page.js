@@ -60,7 +60,7 @@ export default function KnowledgeCenter() {
 						Browse Products
 					</Link>
 					<Link
-						href="/pages/contact-us"
+						href="/#quote"
 						className="inline-flex items-center justify-center h-[52px] px-8 rounded-[10px] border-2 border-custom-blue text-custom-blue font-semibold text-[15px] tablet:text-[16px] hover:bg-custom-blue hover:text-white transition-colors whitespace-nowrap"
 					>
 						Get Product Guidance

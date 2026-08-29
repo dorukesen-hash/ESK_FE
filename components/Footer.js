@@ -19,6 +19,7 @@ function capitalizeWords(str) {
 const companyLinks = [
 	{label: "About Us", href: "/pages/about-us"},
 	{label: "Contact Us", href: "/pages/contact-us"},
+	{label: "Request a Quote", href: "/#quote"},
 	{label: "Knowledge Center", href: "/knowledge-center"},
 	{label: "FAQ", href: "/pages/faq"},
 ];
