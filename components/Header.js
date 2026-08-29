@@ -18,19 +18,19 @@ export default function Header() {
 		<header
 			className="sticky top-0 bg-white text-text-dark py-[12px] items-center overflow-visible z-50 border-b-[2px] border-border-gray">
 			{/* Main header section*/}
-			<div className="h-[60px] flex items-center justify-between tablet:px-[24px] tablet:py-[12px]">
-				<Link href="/" className="py-1 min-w-[180px] flex justify-center items-center h-full ratio-[420/60]">
-					<Image src={icon} width={420} height={60} alt="ESK Packaging"/>
+			<div className="h-[64px] flex items-center justify-between px-[8px] tablet:px-[24px] tablet:py-[12px]">
+				{/* Logo sizes: mobile 280px, tablet 302px, laptop 356px; h-auto keeps aspect ratio at every size. */}
+				<Link href="/" className="py-1 flex items-center h-full flex-1 min-w-0 max-w-[280px] tablet:flex-none tablet:max-w-none">
+					<Image src={icon} width={420} height={60} alt="ESK Packaging"
+					       className="w-full max-w-[280px] tablet:w-[302px] tablet:max-w-none laptop:w-[356px] h-auto"/>
 				</Link>
 				<SearchBar position="top"/>
 				<ActionButtons/>
 				<MobileMenus/>
 			</div>
 
-			{/* below navigation */}
-			<div className="absolute tablet:hidden w-full ">
-				<SearchBar position="bottom"/>
-			</div>
+			{/* Mobile search bar, in normal flow below the header row */}
+			<SearchBar position="bottom"/>
 
 			{/* navbar */}
 			<NavBar/>

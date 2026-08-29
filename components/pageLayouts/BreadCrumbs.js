@@ -73,7 +73,7 @@ function Breadcrumbs({separator = <Chevron/>, hideSegments = []}) {
 	return (
 		<nav
 			aria-label="Breadcrumb"
-			className={`flex items-center justify-start w-full text-16 my-[36px] max-w-[1440px]`}
+			className={`flex flex-wrap items-center justify-start gap-y-0.5 w-full text-[13px] tablet:text-[16px] my-[14px] tablet:my-[36px] max-w-[1440px]`}
 		>
 			{crumbs.map((crumb, idx) => {
 				const isLast = idx === crumbs.length - 1;
