@@ -29,8 +29,13 @@ export default function Header() {
 				<MobileMenus/>
 			</div>
 
-			{/* Mobile search bar, in normal flow below the header row */}
-			<SearchBar position="bottom"/>
+			{/* Mobile search bar, in normal flow below the header row. Hidden
+			    from tablet up so it doesn't duplicate the header row's own
+			    SearchBar (SearchBar.js doesn't read `position` — both
+			    instances share the same internal max-tablet:hidden class). */}
+			<div className="tablet:hidden w-full">
+				<SearchBar position="bottom"/>
+			</div>
 
 			{/* navbar */}
 			<NavBar/>

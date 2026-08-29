@@ -114,6 +114,10 @@ export default function MobileMenus() {
 						</nav>
 						<hr className="border-[1px] w-full my-[8px] border-button-gray"/>
 						<div className="flex flex-col">
+							<Link href={"/#industries-we-serve"}
+							      className="w-full text-[16px] text-left pl-[20px] text-text-dark font-semibold py-[10px] border-r-[4px] border-transparent hover:bg-button-gray hover:border-r-custom-blue">
+								Industries We Serve
+							</Link>
 							<Link href={"/pages/contact-us"}
 							      className="w-full text-[16px] text-left pl-[20px] text-text-dark font-semibold py-[10px] border-r-[4px] border-transparent hover:bg-button-gray hover:border-r-custom-blue">
 								Contact Us

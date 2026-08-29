@@ -81,7 +81,7 @@ export default function SubCategoryLevel({props}) {
 						/>
 					</div>
 					<div className="flex justify-center gap-2 mt-4">
-						{subcategory?.subcategory_images.length > 0 && subcategory?.subcategory_images.map((img) => (
+						{subcategory?.subcategory_images?.length > 0 && subcategory?.subcategory_images.map((img) => (
 							<div
 								key={img.id}
 								className={`w-[80px] h-[80px] border-2 rounded relative cursor-pointer ${

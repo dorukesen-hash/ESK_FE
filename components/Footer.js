@@ -6,15 +6,8 @@ import {useContext, useMemo} from "react";
 
 import icon from "../assets/EKS_icon_dark.png";
 import {AppContext} from "@/Context/AppContext";
-import {slugify} from "@/hooks/service";
-
-function capitalizeWords(str) {
-	return str
-		.toLowerCase()
-		.split(' ')
-		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
-}
+import {prettify, slugify} from "@/hooks/service";
+import {CONTACT_ADDRESS, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF} from "@/utils/contactInfo";
 
 const companyLinks = [
 	{label: "About Us", href: "/pages/about-us"},
@@ -60,16 +53,16 @@ function BrandBlock() {
 				strapping, edge protection, stretch film, mailers, boxes and tools.
 			</p>
 			<address className="not-italic text-[14px] text-gray-400 leading-relaxed">
-				2050 Forest Ln #350, Garland, TX 75042
+				{CONTACT_ADDRESS}
 			</address>
 			<div className="flex flex-col gap-1">
-				<a href="tel:+14699922447"
+				<a href={CONTACT_PHONE_HREF}
 				   className="py-[5px] text-[15px] font-semibold text-white hover:text-text-blue transition-colors">
-					469-992-2447
+					{CONTACT_PHONE_DISPLAY}
 				</a>
-				<a href="mailto:sales@eskpackaging.com"
+				<a href={`mailto:${CONTACT_EMAIL}`}
 				   className="py-[5px] text-[15px] font-semibold text-white hover:text-text-blue transition-colors">
-					sales@eskpackaging.com
+					{CONTACT_EMAIL}
 				</a>
 			</div>
 		</div>
@@ -85,7 +78,7 @@ export default function Footer() {
 	const shopLinks = useMemo(() => ([
 		{label: "All Products", href: "/products"},
 		...(state?.categories ?? []).map((cat) => ({
-			label: capitalizeWords(cat.name),
+			label: prettify(cat.name),
 			href: `/products/${slugify(cat.name)}`,
 		})),
 	]), [state?.categories]);

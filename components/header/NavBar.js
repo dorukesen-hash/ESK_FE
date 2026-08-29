@@ -4,16 +4,7 @@ import React, {useEffect, useMemo, useRef, useState, useContext} from "react";
 import {useRouter, usePathname} from "next/navigation";
 import Link from "next/link";
 import {AppContext} from "@/Context/AppContext";
-import {slugify} from "@/hooks/service";
-
-// Görüntü için
-function capitalizeWords(str) {
-	return str
-		.toLowerCase()
-		.split(' ')
-		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
-}
+import {prettify, slugify} from "@/hooks/service";
 
 const shopMenu = {
 	label: "Shop Products",
@@ -70,10 +61,10 @@ export default function NavBar() {
 	// Backend'den gelen kategoriler -> mega menu grupları
 	const groups = useMemo(() => (
 		(categories ?? []).map((item) => ({
-			label: capitalizeWords(item.name),
+			label: prettify(item.name),
 			href: `/products/${slugify(item.name)}`,
 			children: (item.subcategories ?? []).map((subItem) => ({
-				label: capitalizeWords(subItem.name),
+				label: prettify(subItem.name),
 				href: `/products/${slugify(item.name)}/${slugify(subItem.name)}`,
 				children: [],
 			})),
