@@ -4,11 +4,12 @@ import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import Link from "next/link";
+import {CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF} from "@/utils/contactInfo";
 
 const CONTACT = {
-	phoneDisplay: "469-992-2447",
-	phoneHref: "tel:+14699922447",
-	email: "sales@eskpackaging.com",
+	phoneDisplay: CONTACT_PHONE_DISPLAY,
+	phoneHref: CONTACT_PHONE_HREF,
+	email: CONTACT_EMAIL,
 };
 
 const LOCATIONS = [

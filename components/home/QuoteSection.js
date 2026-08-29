@@ -4,8 +4,9 @@ import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import Link from "next/link";
+import {CONTACT_ADDRESS, CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF} from "@/utils/contactInfo";
 
-const EMAIL = "sales@eskpackaging.com";
+const EMAIL = CONTACT_EMAIL;
 
 const FAMILIES = [
 	"Strapping & Load Securement",
@@ -101,14 +102,14 @@ export default function QuoteSection() {
 					<div className="flex flex-col gap-1 border-t-2 border-border-gray/60 pt-4 max-w-[560px]">
 						<p className="text-[14px] font-semibold text-text-dark">Prefer to reach us directly?</p>
 						<div className="flex flex-col mobile:flex-row mobile:items-center gap-1 mobile:gap-5">
-							<a href="tel:+14699922447" className="py-1 text-[15px] font-semibold text-custom-blue hover:underline">
-								469-992-2447
+							<a href={CONTACT_PHONE_HREF} className="py-1 text-[15px] font-semibold text-custom-blue hover:underline">
+								{CONTACT_PHONE_DISPLAY}
 							</a>
 							<a href={`mailto:${EMAIL}`} className="py-1 text-[15px] font-semibold text-custom-blue hover:underline">
 								{EMAIL}
 							</a>
 						</div>
-						<address className="not-italic text-[14px] text-text-light">2050 Forest Ln #350, Garland, TX 75042</address>
+						<address className="not-italic text-[14px] text-text-light">{CONTACT_ADDRESS}</address>
 					</div>
 				</div>
 

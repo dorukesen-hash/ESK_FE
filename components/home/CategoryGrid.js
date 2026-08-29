@@ -4,17 +4,9 @@ import {useContext} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {AppContext} from "@/Context/AppContext";
-import {slugify} from "@/hooks/service";
+import {prettify, slugify} from "@/hooks/service";
 
 const cdnUrl = process.env.NEXT_PUBLIC_CDN_URL;
-
-function capitalizeWords(str) {
-	return str
-		.toLowerCase()
-		.split(' ')
-		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
-}
 
 function CardImage({image}) {
 	if (!image) {
@@ -65,7 +57,7 @@ export default function CategoryGrid() {
 	const cards = categories.map((cat) => {
 		const thumbUrl = cat.subcategories?.[0]?.subcategory_images?.[0]?.image?.url;
 		return {
-			label: capitalizeWords(cat.name),
+			label: prettify(cat.name),
 			href: `/products/${slugify(cat.name)}`,
 			image: thumbUrl ? {src: `${cdnUrl}${thumbUrl}`, alt: cat.name} : null,
 		};

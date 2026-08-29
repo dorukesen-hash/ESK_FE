@@ -16,7 +16,6 @@ export default function HomeHero() {
 					src="/homepage/candidates/hero-d-product-range-full.webp"
 					alt={heroImage.alt}
 					fill
-					priority
 					sizes="62vw"
 					className="object-contain object-right"
 				/>
