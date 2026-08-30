@@ -67,16 +67,16 @@ export default function SubCategoryLevel({props}) {
 				))}
 			</div>
 		</div>
-		: <div className="w-full max-w-[1200px] flex flex-col justify-center gap-12 p-10">
-			<div className="flex gap-[38px]">
+		: <div className="w-full max-w-[1200px] flex flex-col justify-center gap-12 p-4 tablet:p-10">
+			<div className="flex flex-col min-[1024px]:flex-row gap-8 min-[1024px]:gap-[38px]">
 				<div className="flex flex-col">
-					<div className="w-[480px] h-[480px] relative rounded-lg overflow-hidden">
+					<div className="relative w-full max-w-[440px] mx-auto min-[1024px]:mx-0 aspect-square shrink-0 rounded-[12px] border-2 border-border-gray bg-white overflow-hidden">
 						<Image
 							src={activeImage ? `${cdnUrl}${activeImage?.image?.url}`: (subcategory?.subcategory_images?.[0]?.image?.url ? `${cdnUrl}${subcategory.subcategory_images[0].image.url}` : icon)}
 							alt="Main Product"
-							sizes="480px"
+							sizes="(max-width: 1024px) 90vw, 440px"
 							fill
-							className="object-contain"
+							className="object-contain p-2"
 							priority
 						/>
 					</div>
