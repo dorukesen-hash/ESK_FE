@@ -18,7 +18,6 @@ export function VariantLevel({props}) {
 	const [activeImage, setActiveImage] = useState(icon)
 	const [imageUrls, setImageUrls] = useState([]); // imageUrls artık state
 	const [quantity, setQuantity] = useState(0);
-	const [activeTab, setActiveTab] = useState(0);
 	const [loading, setLoading] = useState(true);
 	const [subcategoryName, setSubcategoryName] = useState(null);
 	const allVariants = allVariantsInCategories(state.categories);
@@ -53,58 +52,17 @@ export function VariantLevel({props}) {
 		fetchVariant();
 	}, [localVariant]);
 
-	const tabTitles = ["Product Description", "Specifications", "Frequently Purchased Together"];
-
 	// subcategory bulunamazsa veya fieldLabels'da karşılığı yoksa crash etmemesi için
 	const specFields = fieldLabels[subcategoryName] || {};
 
-	const tabContents = [
-		// 1. Tab: Ürün Açıklaması
-		(
-			<div key={1}>
-				<p className="mb-[30px] text-[16px]">{variantData?.description}</p>
-				{[1,2,3,4,5,6].map(i => (
-					variantData?.[`bullet_${i}`] && (
-						<p key={i} className="flex pb-[18px] gap-[12px] text-[14px]">
-							<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								{/* SVG path'leri */}
-								<path d="M22.4322 7.47943L20.536 9.71645C20.7715 10.5282 20.9017 11.3834 20.9017 12.2695C20.9017 17.3261 16.787 21.4407 11.7304 21.4407C6.67389 21.4407 2.55926 17.3261 2.55926 12.2695C2.55926 7.21296 6.67389 3.09832 11.7304 3.09832C13.354 3.09832 14.8846 3.52589 16.2107 4.2695L17.89 2.29273C16.0992 1.18352 13.9861 0.539062 11.7304 0.539062C5.26104 0.539062 0 5.8001 0 12.2695C0 18.7389 5.26104 23.9999 11.7304 23.9999C18.1999 23.9999 23.4609 18.7389 23.4609 12.2695C23.4609 10.5654 23.0953 8.94186 22.4322 7.47943Z" fill="#5CA0E2"/>
-								<path d="M13.0195 16.3842L7.22559 10.5902L10.0451 7.77073L12.7778 10.5097L21.695 0L24.7314 2.57785L13.0195 16.3842Z" fill="#5CA0E2"/>
-							</svg>
-							{variantData?.[`bullet_${i}`]}
-						</p>
-					)
-				))}
-			</div>
-		),
-		(
-			<div className="px-4" key={2}>
-				<button onClick={()=> console.log(localVariant)}>variant</button>
-				<button onClick={()=> console.log(subcategoryName)}>name</button>
-				<button onClick={()=> console.log(state.categories)}>all</button>
-				{Object.entries(variantData || {})
-					.filter(([key, value]) => specFields[key] && value !== null && value !== "")
-					.map(([key, value]) => (
-						<li key={key} className="h-[34px] flex items-center border-b-[1px] border-border-gray px-2">
-							<span className="min-w-[240px] text-left font-medium">{specFields[key]}</span>
-							<span className="flex-grow text-left">{value}</span>
-						</li>
-					))}
-			</div>
-		),
-		// 3. Tab: Sıkça Birlikte Alınanlar
-		(
-			<div key={3} className="grid grid-cols-3 gap-4">
-				{variantData?.FPT && variantData.FPT.length > 0 ? (
-					variantData.FPT.map(variant => (
-						<VariantCard key={variant.id} id={variant.target_id} />
-					))
-				) : (
-					<p className="col-span-3 text-center text-gray-500">No frequently purchased products found.</p>
-				)}
-			</div>
-		)
-	];
+	const specRows = Object.entries(variantData || {})
+		.filter(([key, value]) => specFields[key] && value !== null && value !== "")
+		.map(([key, value]) => ({label: specFields[key], value}));
+
+	const usageBullets = [1, 2, 3, 4, 5, 6]
+		.map(i => variantData?.[`bullet_${i}`])
+		.filter(Boolean);
+
 	const handleAddToCart = async () => {
 		if (quantity < 1) return;
 		let isPallet
@@ -123,7 +81,6 @@ export function VariantLevel({props}) {
 
 	return (
 		<div className="w-full max-w-[1180px] px-4 text-text-dark mb-[544px]" >
-			<button onClick={()=> console.log(state)}>data</button>
 			{/* Images and buy sections*/}
 			<div className="flex flex-col min-[1024px]:flex-row w-full gap-8 min-[1024px]:gap-[58px]">
 				{/* Images section*/}
@@ -209,26 +166,71 @@ export function VariantLevel({props}) {
 						>
 							Add to Cart
 						</button>
-						<MakeQuery/>
+						<MakeQuery variantSku={variantData?.stock} variantTitle={variantData?.title}/>
 					</div>
 				</div>
 			</div>
-			{/* Description section */}
-			<div className="mt-10">
-				<div className="relative flex text-[18px] gap-4 border-b-[4px] border-border-gray box-border">
-					{tabTitles.map((title, idx) => (
-						<button
-							key={idx}
-							onClick={() => setActiveTab(idx)}
-							className={`z-40 h-[62px] w-full mb-[-4px] rounded-t-md font-semibold border-[2px] border-b-[8px] border-border-gray transition duration-200 ${activeTab === idx && 'border-b-custom-blue text-custom-blue' }`}
-						>
-							{title}
-						</button>
-					))}
-				</div>
-				<div className="mt-[32px] flex flex-col gap-[23px] text-[14px]">
-					{tabContents[activeTab]}
-				</div>
+
+			{/* Description, Specifications, Applications, Frequently Purchased
+			    Together — flowing sections instead of click-to-switch tabs, so
+			    everything is visible without an extra click. Each section only
+			    renders when it has real content. */}
+			<div className="mt-10 flex flex-col gap-10">
+				{variantData?.description && (
+					<section aria-labelledby="description-title">
+						<h2 id="description-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Product Description
+						</h2>
+						<p className="text-[15px] text-text-dark leading-relaxed max-w-[820px] whitespace-pre-line">{variantData.description}</p>
+					</section>
+				)}
+
+				{specRows.length > 0 && (
+					<section aria-labelledby="specs-title">
+						<h2 id="specs-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Specifications
+						</h2>
+						<dl className="border-2 border-border-gray rounded-[12px] divide-y divide-border-gray/60 overflow-hidden max-w-[640px]">
+							{specRows.map((row) => (
+								<div key={row.label} className="flex items-baseline gap-4 px-4 py-2.5 text-[14px]">
+									<dt className="w-[140px] shrink-0 font-semibold text-text-light">{row.label}</dt>
+									<dd className="text-text-dark break-words">{row.value}</dd>
+								</div>
+							))}
+						</dl>
+					</section>
+				)}
+
+				{usageBullets.length > 0 && (
+					<section aria-labelledby="applications-title">
+						<h2 id="applications-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Benefits &amp; Applications
+						</h2>
+						<ul className="flex flex-col gap-2">
+							{usageBullets.map((bullet, i) => (
+								<li key={i} className="flex items-start gap-3 text-[14px] text-text-dark whitespace-pre-line">
+									<svg className="shrink-0 mt-[2px] text-custom-blue" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+										<path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+									</svg>
+									{bullet}
+								</li>
+							))}
+						</ul>
+					</section>
+				)}
+
+				{variantData?.FPT && variantData.FPT.length > 0 && (
+					<section aria-labelledby="fpt-title">
+						<h2 id="fpt-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Frequently Purchased Together
+						</h2>
+						<div className="grid grid-cols-2 min-[1024px]:grid-cols-4 gap-3 tablet:gap-4">
+							{variantData.FPT.map(variant => (
+								<VariantCard key={variant.id} id={variant.target_id} />
+							))}
+						</div>
+					</section>
+				)}
 			</div>
 		</div>
 	);
