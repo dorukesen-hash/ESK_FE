@@ -12,8 +12,12 @@ export default function FeaturedGrid() {
 	const {state} = useContext(AppContext);
 	const categories = state?.categories ?? [];
 
+	// Admin-curated (ESK_ADMIN's "Featured" page sets Variant.featured/
+	// featured_position) rather than just "the first 8 variants that exist" -
+	// the category tree already carries both fields on every variant.
 	const items = allVariantsInCategories(categories)
-		.sort((a, b) => a.id - b.id)
+		.filter((v) => v.featured)
+		.sort((a, b) => (a.featured_position ?? 0) - (b.featured_position ?? 0))
 		.slice(0, MAX_ITEMS);
 
 	return (
