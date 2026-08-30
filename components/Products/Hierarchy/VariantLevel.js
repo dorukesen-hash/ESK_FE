@@ -125,16 +125,16 @@ export function VariantLevel({props}) {
 		<div className="w-full max-w-[1180px] px-4 text-text-dark mb-[544px]" >
 			<button onClick={()=> console.log(state)}>data</button>
 			{/* Images and buy sections*/}
-			<div className="flex w-full gap-[58px]">
+			<div className="flex flex-col min-[1024px]:flex-row w-full gap-8 min-[1024px]:gap-[58px]">
 				{/* Images section*/}
 				<div className="flex flex-col">
-					<div className="w-[480px] h-[480px]">
+					<div className="relative w-full max-w-[440px] mx-auto min-[1024px]:mx-0 aspect-square shrink-0 rounded-[12px] border-2 border-border-gray bg-white overflow-hidden">
 						<Image
 							src={activeImage}
 							alt={typeof activeImage === 'string' ? activeImage : 'Product Image'}
-							width={480}
-							height={480}
-							className="object-contain w-full h-full"
+							fill
+							sizes="(max-width: 1024px) 90vw, 440px"
+							className="object-contain p-2"
 							priority // LCP için priority eklendi
 						/>
 					</div>
