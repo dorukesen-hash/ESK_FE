@@ -152,9 +152,10 @@ const VariantTables = ({props}) => {
 	
 	return (<div className="w-full flex flex-col justify-center items-center gap-12 mt-[72px]">
 		{/* CASE PRICING */}
-		<div className="min-w-[1200px]">
+		<div className="w-full">
 			<h2 className="text-[26px] mb-[14px] text-text-dark font-bold">Case Pricing</h2>
-			<table className="w-full border-collapse text-[14px] mb-60">
+			<div className="w-full overflow-x-auto">
+			<table className="min-w-[1200px] w-full border-collapse text-[14px] mb-60">
 				<thead className="h-[74px] bg-blue-100 text-[16px] font-semibold text-left">
 				<tr>
 					<th rowSpan="2" className="p-2 text-center border-x-[2px] border-white">Stock #</th>
@@ -200,6 +201,7 @@ const VariantTables = ({props}) => {
 				))}
 				</tbody>
 			</table>
+			</div>
 		</div>
 
 		{/* PALLET PRICING */}
