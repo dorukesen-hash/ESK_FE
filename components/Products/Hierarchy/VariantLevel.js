@@ -135,7 +135,7 @@ export function VariantLevel({props}) {
 							<p>${variantData?.ten_plus_units}</p>
 						</div>
 					</div>
-					<div className="w-[400px] flex gap-[10px] mt-[40px] text-[18px] flex-wrap justify-center">
+					<div className="w-full max-w-[400px] flex gap-[10px] mt-[40px] text-[18px] flex-wrap justify-center">
 						<div
 							className="h-[64px] w-[92px] flex items-center justify-evenly border-[2px] border-border-gray rounded-[12px] group focus-within:border-custom-blue">
 							<button
