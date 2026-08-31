@@ -32,7 +32,7 @@ const CheckoutForm = () => {
 				elements,
 				redirect: "if_required",
 				confirmParams: {
-					return_url: "http://localhost:3000/cart/submit", // Gerekirse yönlendirme URL'si
+					return_url: `${window.location.origin}/cart/success`,
 				},
 			});
 
@@ -50,16 +50,25 @@ const CheckoutForm = () => {
 			if (paymentIntent && paymentIntent.status === "succeeded") {
 				console.log("payment succeeded", paymentIntent);
 
-                // 3. Başarılı ise state'i güncelle
-                setOrder(
-                    {
-                        ...order,
-                        paymentIntent : paymentIntent
-                    }
-                )
+				// 3. Build the object to send from the REAL Stripe result, not
+				// the stale `order` closure from before confirmPayment ran -
+				// setOrder() below is async and wouldn't be reflected in
+				// `order` in this same tick. Field names here (id, payment_method)
+				// match what the backend actually reads from a real PaymentIntent.
+				const confirmedOrder = {
+					...order,
+					paymentIntent: {
+						id: paymentIntent.id,
+						amount: paymentIntent.amount,
+						currency: paymentIntent.currency,
+						status: paymentIntent.status,
+						payment_method: paymentIntent.payment_method,
+					},
+				};
+				setOrder(confirmedOrder);
 
 				// 4. Order API'ye gönder
-				const res = await api.post("/orders/", order);
+				const res = await api.post("/orders/", confirmedOrder);
 				console.log("order success:", res);
 
 				// Eğer cevap 200 ise yönlendirme yap
@@ -93,16 +102,15 @@ const CheckoutForm = () => {
 };
 
 export default function CheckOut() {
-	const { order, state } = useContext(AppContext);
-	const discount = state.user?.firstOrder ? 10 : 0;
-	const sum = {
-		total: order.items.reduce((sum, item) => sum + item.price, 0) + order.shipping.price,
-		discount: `${discount}%`,
-		final: Math.round((order.items.reduce((sum, item) => sum + item.price, 0) + order.shipping.price) * ((100 - discount) / 100)) // Final price in cents
-	}
-	const totalAmountInCents = Math.round((sum.final + order.shipping.price) * 100);
+	const { order } = useContext(AppContext);
 
-	const { clientSecret, loading, error } = useCreatePaymentIntent(totalAmountInCents);
+	// The charge amount is computed server-side (from real catalog prices for
+	// the logged-in customer) - we only send what's in the cart, not a dollar
+	// amount. See ESK_API's stripeController.createPaymentIntent.
+	const { clientSecret, loading, error } = useCreatePaymentIntent({
+		items: order.items.map((item) => ({ variantId: item.id, quantity: item.quantity })),
+		shipping: order.shipping,
+	});
 
 	const appearance = { theme: "stripe" };
 	const options = { clientSecret, appearance };
