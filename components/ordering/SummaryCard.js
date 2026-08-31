@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {AppContext} from "@/Context/AppContext";
 import Link from "next/link";
 import api from "@/hooks/Api";
+import {useDiscountCode} from "@/hooks/useDiscountCode";
 
 
 export default function SummaryCard() {
@@ -9,6 +10,9 @@ export default function SummaryCard() {
     const [total, setTotal]  = useState(0);
     const [tax, setTax] = useState(0);
     const [canProceed, setCanProceed] = useState(false);
+    const [showCouponInput, setShowCouponInput] = useState(false);
+    const [couponInput, setCouponInput] = useState("");
+    const {discountCode, preview, isApplying, error, applyCode, removeCode} = useDiscountCode();
 
     useEffect(() => {
         if (!order?.items) return;
@@ -53,7 +57,8 @@ export default function SummaryCard() {
         }
     },[order.recipient, order.shipping]);
 
-
+    const discountAmount = preview?.applied ? preview.discountAmount : 0;
+    const orderTotal = total - discountAmount + order.shipping.price + tax;
 
     return (
       <div className="scale-70 tablet:scale-85 laptop:scale-100 w-[350px] h-[478px] bg-[#FAFAFD] rounded-[10px] shadow-md shadow-border-gray p-6 text-text-dark text-[22px]">
@@ -73,16 +78,53 @@ export default function SummaryCard() {
           <span>${tax.toFixed(2)}</span>
         </div>
 
+        {discountAmount > 0 && (
+          <div className="flex justify-between mb-4 text-custom-button-green">
+            <span>Discount ({discountCode}):</span>
+            <span>-${discountAmount.toFixed(2)}</span>
+          </div>
+        )}
+
         <hr className="border-gray-300 mb-4" />
 
         <div className="flex justify-between font-[600] text-[18px] mb-6">
           <span>Order Total:</span>
-          <span>${(total + order.shipping.price + tax).toFixed(2)}</span>
+          <span>${orderTotal.toFixed(2)}</span>
         </div>
 
-        <p className="text-[14px] text-[#3686c7] font-medium mb-2 cursor-pointer">
-          Have a coupon?
-        </p>
+        {discountCode ? (
+          <div className="flex items-center gap-2 mb-2 text-[13px]">
+            <span className="text-custom-button-green font-medium">
+              &quot;{discountCode}&quot;{preview?.applied ? "" : preview?.message ? " (not applied)" : ""}
+            </span>
+            <button onClick={removeCode} className="text-red-600 underline cursor-pointer">Remove</button>
+          </div>
+        ) : showCouponInput ? (
+          <div className="flex items-center gap-2 mb-2 text-[13px]">
+            <input
+              type="text"
+              value={couponInput}
+              onChange={(e) => setCouponInput(e.target.value)}
+              className="border border-gray-300 rounded px-2 py-1 text-[13px] w-[110px]"
+              placeholder="Code"
+            />
+            <button
+              onClick={() => applyCode(couponInput)}
+              disabled={isApplying || !couponInput.trim()}
+              className="bg-gray-200 px-2 py-1 rounded shadow-sm disabled:opacity-50"
+            >
+              {isApplying ? "..." : "Apply"}
+            </button>
+          </div>
+        ) : (
+          <p
+            onClick={() => setShowCouponInput(true)}
+            className="text-[14px] text-[#3686c7] font-medium mb-2 cursor-pointer"
+          >
+            Have a coupon?
+          </p>
+        )}
+        {error && <p className="text-[12px] text-red-600 mb-2">{error}</p>}
 
         <p className="text-[13px] leading-[1.4] mb-6">
           By counting, I affirm that my shipping destination has a receiving

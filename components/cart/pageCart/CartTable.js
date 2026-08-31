@@ -5,6 +5,7 @@ import React, {useContext, useState} from "react";
 import {AppContext} from "@/Context/AppContext";
 import CartPageItem from "./CartPageItem";
 import CalculateShippingModal from "@/components/ordering/shipping/CalculateShippingModal";
+import {useDiscountCode} from "@/hooks/useDiscountCode";
 
 
 
@@ -12,6 +13,8 @@ const CartTable = () => {
 	const {state, emptyCart, cartTotal} = useContext(AppContext);
 	const cartItems = state?.detailedCart || [];
 	const [showShippingModal, setShowShippingModal] = useState(false);
+	const [couponInput, setCouponInput] = useState("");
+	const {discountCode, preview, isApplying, error, applyCode, removeCode} = useDiscountCode();
 
 
 	return (
@@ -54,13 +57,38 @@ const CartTable = () => {
 						Estimated Shipping
 					</button>
 					<div className="h-[36px] border-[1px] border-border-gray hidden tablet:block"></div>
-					<div className="flex items-center gap-2">
-						<label className="text-sm text-gray-600">Coupon Code</label>
-						<input
-							type="text"
-							className="border border-gray-300 rounded px-2 py-1 text-sm w-[130px]"
-						/>
-						<button className="bg-gray-200 text-sm px-3 py-1 rounded shadow-sm">Add</button>
+					<div className="flex flex-col items-start tablet:items-end gap-1">
+						{discountCode ? (
+							<div className="flex items-center gap-2">
+								<span className="text-sm text-custom-button-green font-medium">
+									{preview?.applied
+										? `"${discountCode}" applied (-$${preview.discountAmount.toFixed(2)})`
+										: `"${discountCode}"`}
+								</span>
+								<button onClick={removeCode} className="text-sm text-red-600 underline">Remove</button>
+							</div>
+						) : (
+							<div className="flex items-center gap-2">
+								<label className="text-sm text-gray-600">Coupon Code</label>
+								<input
+									type="text"
+									value={couponInput}
+									onChange={(e) => setCouponInput(e.target.value)}
+									className="border border-gray-300 rounded px-2 py-1 text-sm w-[130px]"
+								/>
+								<button
+									onClick={() => applyCode(couponInput)}
+									disabled={isApplying || !couponInput.trim()}
+									className="bg-gray-200 text-sm px-3 py-1 rounded shadow-sm disabled:opacity-50"
+								>
+									{isApplying ? "..." : "Add"}
+								</button>
+							</div>
+						)}
+						{error && <span className="text-xs text-red-600">{error}</span>}
+						{preview && !preview.applied && preview.message && (
+							<span className="text-xs text-gray-500">{preview.message}</span>
+						)}
 					</div>
 				</div>
 

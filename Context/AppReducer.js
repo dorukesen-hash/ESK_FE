@@ -21,6 +21,7 @@ export const initialOrderState = {
 		zip: ""
 	},
 	items: [],
+	discountCode: "",
 	recipient: {
 		firstname: "",
 		lastname: "",
