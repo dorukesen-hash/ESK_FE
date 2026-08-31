@@ -30,7 +30,11 @@ const buildShipTo = (ord) => {
 };
 
 const guessShipVia = (ord) => {
-  return ord?.ship_via || ord?.shipVia || ord?.shippingCarrier || ord?.carrier || "-";
+  return ord?.shipment?.carrier?.name || "-";
+};
+
+const extractShipStatus = (ord) => {
+  return ord?.shipment?.shipmentstatus?.name || "-";
 };
 
 const extractTracking = (ord) => {
@@ -114,11 +118,9 @@ export default function Page() {
     const ord = order || {};
     return {
       shipVia: guessShipVia(ord) || "-",
-      packageCount: ord.packageCount ?? (Array.isArray(ord.packages) ? ord.packages.length : undefined) ?? "-",
       status: ord.orderstatus?.name || ord.status || ord.closure || "-",
+      shipStatus: extractShipStatus(ord),
       tracking: extractTracking(ord) || "-",
-      deliveredOn: formatDate(ord.delivered_on || ord.deliveryDate || ord.shipment?.delivered_on || null),
-      signedBy: ord.signed_by || ord.shipment?.signed_by || "-",
     };
   }, [order]);
 
@@ -171,10 +173,6 @@ export default function Page() {
                         <div className="flex-1">{shipmentDetails.shipVia}</div>
                       </div>
                       <div className="flex items-start text-text-dark">
-                        <div className="w-40 shrink-0 font-semibold">Package Count:</div>
-                        <div className="flex-1">{shipmentDetails.packageCount}</div>
-                      </div>
-                      <div className="flex items-start text-text-dark">
                         <div className="w-40 shrink-0 font-semibold">Status:</div>
                         <div className="flex-1">{shipmentDetails.status}</div>
                       </div>
@@ -197,12 +195,8 @@ export default function Page() {
                     {/* Right column */}
                     <div className="flex flex-col gap-2 md:justify-end">
                       <div className="flex items-start text-text-dark">
-                        <div className="w-40 shrink-0 font-semibold">Delivered On:</div>
-                        <div className="flex-1">{shipmentDetails.deliveredOn}</div>
-                      </div>
-                      <div className="flex items-start text-text-dark">
-                        <div className="w-40 shrink-0 font-semibold">Signed By:</div>
-                        <div className="flex-1">{shipmentDetails.signedBy}</div>
+                        <div className="w-40 shrink-0 font-semibold">Ship Status:</div>
+                        <div className="flex-1">{shipmentDetails.shipStatus}</div>
                       </div>
                     </div>
                   </div>
