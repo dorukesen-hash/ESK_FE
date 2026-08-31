@@ -12,14 +12,15 @@ export const useCreatePaymentIntent = (cart) => {
 
 	const items = cart?.items;
 	const shipping = cart?.shipping;
-	const signature = items && items.length > 0 ? JSON.stringify({ items, shipping }) : null;
+	const discountCode = cart?.discountCode;
+	const signature = items && items.length > 0 ? JSON.stringify({ items, shipping, discountCode }) : null;
 
 	useEffect(() => {
 		if (!signature || signature === lastSignature) return;
 		const fetchClientSecret = async () => {
 			setLoading(true);
 			try {
-				const response = await api.post("/stripe/create-payment-intent", { items, shipping, currency: "usd" });
+				const response = await api.post("/stripe/create-payment-intent", { items, shipping, discountCode, currency: "usd" });
 				if (response?.data?.clientSecret) {
 					setClientSecret(response.data.clientSecret);
 					setLastSignature(signature);

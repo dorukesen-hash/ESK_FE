@@ -110,6 +110,7 @@ export default function CheckOut() {
 	const { clientSecret, loading, error } = useCreatePaymentIntent({
 		items: order.items.map((item) => ({ variantId: item.id, quantity: item.quantity })),
 		shipping: order.shipping,
+		discountCode: order.discountCode,
 	});
 
 	const appearance = { theme: "stripe" };
