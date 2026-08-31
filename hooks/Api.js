@@ -192,4 +192,10 @@ export const getOrders = async (params) => {
 	return response.data;
 }
 
+// Invoices
+export const getInvoices = async () => {
+	const response = await api.get('/account/invoices');
+	return response.data?.invoices ?? [];
+}
+
 export default api;
