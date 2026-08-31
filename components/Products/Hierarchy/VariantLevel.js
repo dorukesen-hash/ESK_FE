@@ -79,9 +79,6 @@ export function VariantLevel({props}) {
 		),
 		(
 			<div className="px-4" key={2}>
-				<button onClick={()=> console.log(localVariant)}>variant</button>
-				<button onClick={()=> console.log(subcategoryName)}>name</button>
-				<button onClick={()=> console.log(state.categories)}>all</button>
 				{Object.entries(variantData || {})
 					.filter(([key, value]) => specFields[key] && value !== null && value !== "")
 					.map(([key, value]) => (
@@ -123,7 +120,6 @@ export function VariantLevel({props}) {
 
 	return (
 		<div className="w-full max-w-[1180px] px-4 text-text-dark mb-[544px]" >
-			<button onClick={()=> console.log(state)}>data</button>
 			{/* Images and buy sections*/}
 			<div className="flex flex-col min-[1024px]:flex-row w-full gap-8 min-[1024px]:gap-[58px]">
 				{/* Images section*/}
