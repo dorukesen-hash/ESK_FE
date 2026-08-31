@@ -2,7 +2,7 @@ import Image from "next/image";
 import {AppContext} from "@/Context/AppContext";
 import React, {useContext, useEffect, useState} from "react";
 import altImage from "@/assets/ESK_icon_mini.png";
-import {calculatePrice} from "@/hooks/service";
+import {calculatePrice, getUnitPrice} from "@/hooks/service";
 
 
 const CartContainerItem = ({id}) => {
@@ -15,13 +15,7 @@ const CartContainerItem = ({id}) => {
 	useEffect(() => {
 		setQuantity(item?.quantity);
 		setSum(calculatePrice(item))
-		setPrice(item.one_four_units)
-		if (quantity > 4) {
-			setPrice(item.five_nine_units)
-		}
-		if (quantity > 9) {
-			setPrice(item.ten_plus_units)
-		}
+		setPrice(getUnitPrice(item))
 	}, [item, item?.quantity, quantity]) // quantity eklendi
 
 	const handleChange = async (delta) => {

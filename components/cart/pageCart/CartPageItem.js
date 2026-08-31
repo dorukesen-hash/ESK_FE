@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import QuantityButtons from "@/components/cart/QuantityButtons";
 import {AppContext} from "@/Context/AppContext";
+import {getUnitPrice} from "@/hooks/service";
 
 const CartPageItem = ({item}) => {
 	const {id, variant_images, title, quantity, isPallet} = item;
@@ -10,13 +11,7 @@ const CartPageItem = ({item}) => {
 
 	const imageUrl = variant_images?.[0]?.image?.url || "/placeholder.webp";
 
-	const getPrice = () => {
-		const qty = item.quantity;
-		if (qty >= 10) return item.ten_plus_units;
-		if (qty >= 5) return item.five_nine_units;
-		return item.one_four_units;
-  };
-	const unitPrice = getPrice();
+	const unitPrice = getUnitPrice(item);
 	const total = unitPrice * quantity;
 
 	return <tr className="border-b border-gray-200 text-[10px] tablet:text-[14px] h-[121px]">
