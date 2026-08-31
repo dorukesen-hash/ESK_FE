@@ -66,8 +66,11 @@ const buildShipTo = (ord) => {
 };
 
 const guessShipVia = (ord) => {
-  // Uygun alan yoksa '-' göster. İleride backend alanı isimlendirilirse burada güncellenir.
-  return ord?.ship_via || ord?.shipVia || ord?.shippingCarrier || ord?.carrier || '-';
+  return ord?.shipment?.carrier?.name || '-';
+};
+
+const extractShipStatus = (ord) => {
+  return ord?.shipment?.shipmentstatus?.name || null;
 };
 
 const extractTracking = (ord) => {
@@ -88,6 +91,7 @@ function normalizeTrackOrders(payload) {
     const shipDate = ord.shipment_date || ord.date_of_closure || ord.updatedAt || null;
     const shipVia = guessShipVia(ord);
     const status = ord.orderstatus?.name || ord.status || ord.closure || '-';
+    const shipStatus = extractShipStatus(ord);
     const tracking = extractTracking(ord);
 
     return {
@@ -98,6 +102,7 @@ function normalizeTrackOrders(payload) {
       shipDate,
       shipVia,
       status,
+      shipStatus,
       tracking,
     };
   });
@@ -199,7 +204,10 @@ export default function Page() {
                 <td className="p-2 text-center">{formatDate(r.orderDate)}</td>
                 <td className="p-2 text-center">{formatDate(r.shipDate)}</td>
                 <td className="p-2 text-center">{r.shipVia || '-'}</td>
-                <td className="p-2 text-center">{r.status || '-'}</td>
+                <td className="p-2 text-center">
+                  <div>{r.status || '-'}</div>
+                  {r.shipStatus && <div className="text-text-light text-[12px]">{r.shipStatus}</div>}
+                </td>
                 <td className="p-2 text-center">
                   {r.tracking ? (
                     <a
