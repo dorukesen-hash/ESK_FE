@@ -169,17 +169,22 @@ export const deleteUserCart = async (id) => {
 }
 
 export const updateCartDetails = async (cartObject) => {
+	if (!cartObject || cartObject.length === 0) return [];
 	try {
-		const responses = [];
+		// One batched request instead of fetching each cart line's variant
+		// one-by-one (was even serial, not just N+1 - each await blocked the
+		// next fetch from starting).
+		const ids = cartObject.map((item) => item.id);
+		const variants = await getVariantsByIdList(ids);
+		const variantsById = new Map(variants.map((v) => [v.id, v]));
 
-		for (let i = 0; i < cartObject.length; i++) {
-			const item = cartObject[i];
-			let variant = await getVariantById(item.id);
-			variant.quantity = item.quantity;
-			variant.isPallet = item.isPallet;
-			responses.push(variant);
-		}
-		return responses;
+		return cartObject
+			.map((item) => {
+				const variant = variantsById.get(item.id);
+				if (!variant) return null;
+				return { ...variant, quantity: item.quantity, isPallet: item.isPallet };
+			})
+			.filter(Boolean);
 	} catch (error) {
 		console.error("updateCartDetails error:", error);
 		return [];

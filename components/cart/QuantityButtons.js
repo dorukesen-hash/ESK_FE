@@ -1,23 +1,39 @@
-import React, {useContext, useState, useEffect} from "react";
+import React, {useContext, useState, useEffect, useRef} from "react";
 import {AppContext} from "@/Context/AppContext";
+
+const UPDATE_DEBOUNCE_MS = 400;
 
 const QuantityButtons = ({id}) => {
 	const {state, updateCart, removeItemFromCart} = useContext(AppContext);
 	const [quantity, setQuantity] = useState(1);
+	const debounceTimer = useRef(null);
 
 	useEffect(() => {
 		const item = state.detailedCart.find(v => v.id === id);
 		if (item) setQuantity(item.quantity);
 	}, [state.detailedCart, id]);
 
-	const handleChange = async (delta) => {
+	useEffect(() => () => clearTimeout(debounceTimer.current), []);
+
+	// The displayed quantity updates instantly on every click, but rapid
+	// +/- clicks only send one PUT /cart/update after they settle, instead
+	// of firing (and racing) a request per click.
+	const scheduleUpdate = (newQty) => {
+		clearTimeout(debounceTimer.current);
+		debounceTimer.current = setTimeout(() => {
+			updateCart({id, quantity: newQty});
+		}, UPDATE_DEBOUNCE_MS);
+	};
+
+	const handleChange = (delta) => {
 		const newQty = quantity + delta;
 		if (newQty < 1) {
+			clearTimeout(debounceTimer.current);
 			removeItemFromCart(id)
 			return;
 		}
 		setQuantity(newQty);
-		updateCart({id, quantity: newQty});
+		scheduleUpdate(newQty);
 	};
 
 	return (
@@ -50,7 +66,10 @@ const QuantityButtons = ({id}) => {
 					const val = parseInt(e.target.value);
 					setQuantity(isNaN(val) || val < 1 ? 1 : val);
 				}}
-				onBlur={() => updateCart({id, quantity})}
+				onBlur={() => {
+					clearTimeout(debounceTimer.current);
+					updateCart({id, quantity});
+				}}
 				className="w-full text-center text-text-dark text-[18px] font-semibold focus:outline-none"
 			/>
 			<button onClick={() => handleChange(1)} className="px-[10px] cursor-pointer">
