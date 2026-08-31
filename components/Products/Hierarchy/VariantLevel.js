@@ -18,7 +18,6 @@ export function VariantLevel({props}) {
 	const [activeImage, setActiveImage] = useState(icon)
 	const [imageUrls, setImageUrls] = useState([]); // imageUrls artık state
 	const [quantity, setQuantity] = useState(0);
-	const [activeTab, setActiveTab] = useState(0);
 	const [loading, setLoading] = useState(true);
 	const [subcategoryName, setSubcategoryName] = useState(null);
 	const allVariants = allVariantsInCategories(state.categories);
@@ -53,10 +52,16 @@ export function VariantLevel({props}) {
 		fetchVariant();
 	}, [localVariant]);
 
-	const tabTitles = ["Product Description", "Specifications", "Frequently Purchased Together"];
-
 	// subcategory bulunamazsa veya fieldLabels'da karşılığı yoksa crash etmemesi için
 	const specFields = fieldLabels[subcategoryName] || {};
+
+	const specRows = Object.entries(variantData || {})
+		.filter(([key, value]) => specFields[key] && value !== null && value !== "")
+		.map(([key, value]) => ({label: specFields[key], value}));
+
+	const usageBullets = [1, 2, 3, 4, 5, 6]
+		.map(i => variantData?.[`bullet_${i}`])
+		.filter(Boolean);
 
 	const tabContents = [
 		// 1. Tab: Ürün Açıklaması
@@ -102,6 +107,7 @@ export function VariantLevel({props}) {
 			</div>
 		)
 	];
+
 	const handleAddToCart = async () => {
 		if (quantity < 1) return;
 		let isPallet
@@ -174,7 +180,7 @@ export function VariantLevel({props}) {
 							<p>${variantData?.ten_plus_units}</p>
 						</div>
 					</div>
-					<div className="w-[400px] flex gap-[10px] mt-[40px] text-[18px] flex-wrap justify-center">
+					<div className="w-full max-w-[400px] flex gap-[10px] mt-[40px] text-[18px] flex-wrap justify-center">
 						<div
 							className="h-[64px] w-[92px] flex items-center justify-evenly border-[2px] border-border-gray rounded-[12px] group focus-within:border-custom-blue">
 							<button
@@ -205,26 +211,71 @@ export function VariantLevel({props}) {
 						>
 							Add to Cart
 						</button>
-						<MakeQuery/>
+						<MakeQuery variantSku={variantData?.stock} variantTitle={variantData?.title}/>
 					</div>
 				</div>
 			</div>
-			{/* Description section */}
-			<div className="mt-10">
-				<div className="relative flex text-[18px] gap-4 border-b-[4px] border-border-gray box-border">
-					{tabTitles.map((title, idx) => (
-						<button
-							key={idx}
-							onClick={() => setActiveTab(idx)}
-							className={`z-40 h-[62px] w-full mb-[-4px] rounded-t-md font-semibold border-[2px] border-b-[8px] border-border-gray transition duration-200 ${activeTab === idx && 'border-b-custom-blue text-custom-blue' }`}
-						>
-							{title}
-						</button>
-					))}
-				</div>
-				<div className="mt-[32px] flex flex-col gap-[23px] text-[14px]">
-					{tabContents[activeTab]}
-				</div>
+
+			{/* Description, Specifications, Applications, Frequently Purchased
+			    Together — flowing sections instead of click-to-switch tabs, so
+			    everything is visible without an extra click. Each section only
+			    renders when it has real content. */}
+			<div className="mt-10 flex flex-col gap-10">
+				{variantData?.description && (
+					<section aria-labelledby="description-title">
+						<h2 id="description-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Product Description
+						</h2>
+						<p className="text-[15px] text-text-dark leading-relaxed max-w-[820px] whitespace-pre-line">{variantData.description}</p>
+					</section>
+				)}
+
+				{specRows.length > 0 && (
+					<section aria-labelledby="specs-title">
+						<h2 id="specs-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Specifications
+						</h2>
+						<dl className="border-2 border-border-gray rounded-[12px] divide-y divide-border-gray/60 overflow-hidden max-w-[640px]">
+							{specRows.map((row) => (
+								<div key={row.label} className="flex items-baseline gap-4 px-4 py-2.5 text-[14px]">
+									<dt className="w-[140px] shrink-0 font-semibold text-text-light">{row.label}</dt>
+									<dd className="text-text-dark break-words">{row.value}</dd>
+								</div>
+							))}
+						</dl>
+					</section>
+				)}
+
+				{usageBullets.length > 0 && (
+					<section aria-labelledby="applications-title">
+						<h2 id="applications-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Benefits &amp; Applications
+						</h2>
+						<ul className="flex flex-col gap-2">
+							{usageBullets.map((bullet, i) => (
+								<li key={i} className="flex items-start gap-3 text-[14px] text-text-dark whitespace-pre-line">
+									<svg className="shrink-0 mt-[2px] text-custom-blue" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+										<path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+									</svg>
+									{bullet}
+								</li>
+							))}
+						</ul>
+					</section>
+				)}
+
+				{variantData?.FPT && variantData.FPT.length > 0 && (
+					<section aria-labelledby="fpt-title">
+						<h2 id="fpt-title" className="text-[22px] tablet:text-[26px] font-bold text-text-dark mb-4">
+							Frequently Purchased Together
+						</h2>
+						<div className="grid grid-cols-2 min-[1024px]:grid-cols-4 gap-3 tablet:gap-4">
+							{variantData.FPT.map(variant => (
+								<VariantCard key={variant.id} id={variant.target_id} />
+							))}
+						</div>
+					</section>
+				)}
 			</div>
 		</div>
 	);
