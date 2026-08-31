@@ -63,6 +63,51 @@ export function VariantLevel({props}) {
 		.map(i => variantData?.[`bullet_${i}`])
 		.filter(Boolean);
 
+	const tabContents = [
+		// 1. Tab: Ürün Açıklaması
+		(
+			<div key={1}>
+				<p className="mb-[30px] text-[16px]">{variantData?.description}</p>
+				{[1,2,3,4,5,6].map(i => (
+					variantData?.[`bullet_${i}`] && (
+						<p key={i} className="flex pb-[18px] gap-[12px] text-[14px]">
+							<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								{/* SVG path'leri */}
+								<path d="M22.4322 7.47943L20.536 9.71645C20.7715 10.5282 20.9017 11.3834 20.9017 12.2695C20.9017 17.3261 16.787 21.4407 11.7304 21.4407C6.67389 21.4407 2.55926 17.3261 2.55926 12.2695C2.55926 7.21296 6.67389 3.09832 11.7304 3.09832C13.354 3.09832 14.8846 3.52589 16.2107 4.2695L17.89 2.29273C16.0992 1.18352 13.9861 0.539062 11.7304 0.539062C5.26104 0.539062 0 5.8001 0 12.2695C0 18.7389 5.26104 23.9999 11.7304 23.9999C18.1999 23.9999 23.4609 18.7389 23.4609 12.2695C23.4609 10.5654 23.0953 8.94186 22.4322 7.47943Z" fill="#5CA0E2"/>
+								<path d="M13.0195 16.3842L7.22559 10.5902L10.0451 7.77073L12.7778 10.5097L21.695 0L24.7314 2.57785L13.0195 16.3842Z" fill="#5CA0E2"/>
+							</svg>
+							{variantData?.[`bullet_${i}`]}
+						</p>
+					)
+				))}
+			</div>
+		),
+		(
+			<div className="px-4" key={2}>
+				{Object.entries(variantData || {})
+					.filter(([key, value]) => specFields[key] && value !== null && value !== "")
+					.map(([key, value]) => (
+						<li key={key} className="h-[34px] flex items-center border-b-[1px] border-border-gray px-2">
+							<span className="min-w-[240px] text-left font-medium">{specFields[key]}</span>
+							<span className="flex-grow text-left">{value}</span>
+						</li>
+					))}
+			</div>
+		),
+		// 3. Tab: Sıkça Birlikte Alınanlar
+		(
+			<div key={3} className="grid grid-cols-3 gap-4">
+				{variantData?.FPT && variantData.FPT.length > 0 ? (
+					variantData.FPT.map(variant => (
+						<VariantCard key={variant.id} id={variant.target_id} />
+					))
+				) : (
+					<p className="col-span-3 text-center text-gray-500">No frequently purchased products found.</p>
+				)}
+			</div>
+		)
+	];
+
 	const handleAddToCart = async () => {
 		if (quantity < 1) return;
 		let isPallet
