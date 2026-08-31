@@ -39,16 +39,15 @@ export const initialOrderState = {
 		totalDeci: 0,
 		totalWeight: 0
 	},
+	// Field names match a real Stripe PaymentIntent (id, payment_method) -
+	// CheckOut.js overwrites this with the real confirmed result before
+	// posting the order; this default is only ever seen pre-checkout.
 	paymentIntent: {
-		paymentIntentId: "",
+		id: "",
 		amount: 0,
 		currency: "usd",
-		created: null,
-		description: null,
 		status: "",
-		receiptEmail: null,
-		shipping: null,
-		paymentMethod: ""
+		payment_method: ""
 	}
 };
 
