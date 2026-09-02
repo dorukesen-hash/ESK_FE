@@ -4,7 +4,6 @@
 import {AppContext} from "@/Context/AppContext";
 import {useContext, useState, useEffect, useRef} from "react";
 import {getShippingOptions} from "@/hooks/Api";
-import {calculatePackageDetails} from "@/hooks/service";
 import axios from "axios";
 
 
@@ -24,8 +23,8 @@ export function ShippingOptionsSelection() {
         const source = axios.CancelToken.source();
         cancelTokenSourceRef.current = source;
 
-        // Calculate package details from cart
-        const packageDetails = calculatePackageDetails(state.detailedCart);
+        // Pallet packing is computed server-side from real DB package
+        // dimensions - the client only sends variantId+quantity.
         const zip = order?.recipient?.zip;
 
         // Generate request data
@@ -33,12 +32,10 @@ export function ShippingOptionsSelection() {
             recipient: {
                 PostalCode: String(zip),
             },
-            packageDetails: {
-                weight: String(packageDetails[0].weight),
-                height: String(packageDetails[0].height),
-                width: String(packageDetails[0].width),
-                length: String(packageDetails[0].length),
-            },
+            items: (state.detailedCart || []).map((item) => ({
+                variantId: item.id,
+                quantity: item.quantity,
+            })),
         };
 
         try {
@@ -53,8 +50,9 @@ export function ShippingOptionsSelection() {
                 },
             }));
             let result = await getShippingOptions(reqData, source.token);
+            const rawOptions = Array.isArray(result?.options) ? result.options : [];
             // Parsing and normalizing results
-            const normalized = (Array.isArray(result) ? result : []).map((o) => ({
+            const normalized = rawOptions.map((o) => ({
                 ...o,
                 priceTotal: o?.priceTotal !== null && o?.priceTotal !== undefined && o?.priceTotal !== '' ? Number(o.priceTotal) : null,
                 carrierName: o?.carrierName ?? '',
@@ -66,6 +64,15 @@ export function ShippingOptionsSelection() {
             let sorted = [...normalized].sort((a, b) => (a.priceTotal ?? Infinity) - (b.priceTotal ?? Infinity));
             sorted = [...sorted, {zip: zip}];
             setOptions(sorted);
+
+            setOrder(prevOrder => ({
+                ...prevOrder,
+                shipping: {
+                    ...prevOrder.shipping,
+                    totalWeight: result?.packing?.totalWeight ?? 0,
+                    totalDeci: result?.packing?.totalDeci ?? 0,
+                },
+            }));
 
             setLoading(false);
         } catch (err) {
