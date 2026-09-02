@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from "react";
 
 import api from "@/hooks/Api";
 import {AppContext} from "@/Context/AppContext";
-import {calculatePackageDetails} from "@/hooks/service";
 import ShippingMethodDropdown from "@/components/ordering/ShippingMethodDropdown";
 
 
@@ -26,12 +25,14 @@ const CalculateShippingModal = ({ onClose }) => {
 
 
     const handleEstimate = async () => {
-        const packageDetails = calculatePackageDetails(detailedCart);
         const payload = {
             recipient: {
                 PostalCode: zipCode,
             },
-            packageDetails
+            items: (detailedCart || []).map((item) => ({
+                variantId: item.id,
+                quantity: item.quantity,
+            })),
         };
 
         try {
